@@ -18,7 +18,8 @@ export function PaymentPanel({ contestId, disabled, onPaid }: Props) {
   const handleStatus = async (status: LifecycleStatus) => {
     const { statusName, statusData } = status;
     if (statusName === 'success') {
-      const txHash = statusData?.transactionReceipt?.transactionHash ?? `charge:${statusData?.chargeId ?? 'unknown'}`;
+      const receipts = (statusData as any)?.transactionReceipts as Array<{ transactionHash?: string }> | undefined;
+      const txHash = receipts?.[0]?.transactionHash ?? `charge:${(statusData as any)?.chargeId ?? 'unknown'}`;
       await onPaid(txHash);
     }
   };
@@ -46,7 +47,7 @@ export function PaymentPanel({ contestId, disabled, onPaid }: Props) {
 
         {productId ? (
           <Checkout productId={productId} onStatus={handleStatus}>
-            <CheckoutButton text="Pay $1 USDC" />
+            <CheckoutButton text="Pay $1 USDC" disabled={!canCheckout} />
             <CheckoutStatus />
           </Checkout>
         ) : (
