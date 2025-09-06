@@ -11,11 +11,17 @@ export type PropQ = {
   units?: string;
 };
 
+export type Propset = {
+  game: string;
+  questions: PropQ[];
+};
+
 export function usePropset({ count = 5 }: { count?: number }) {
-  const { data, isLoading, mutate } = useSWR(['/api/generateProps', count], async ([url, c]) => {
-    const res = await fetch(`${url}?count=${c}`);
+  const key = ['/api/generateProps', count] as const;
+  const { data, isLoading, mutate } = useSWR<Propset>(key, async () => {
+    const res = await fetch(`${key[0]}?count=${key[1]}`);
     if (!res.ok) throw new Error('failed');
-    return res.json();
+    return (await res.json()) as Propset;
   });
-  return { data, isLoading, refresh: ()=> mutate() };
+  return { data, isLoading, refresh: () => mutate() };
 }

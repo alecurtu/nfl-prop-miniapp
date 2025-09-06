@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Coins, Share2, Users } from 'lucide-react';
-import { usePropset } from '@/lib/nfl';
+import { usePropset, type PropQ } from '@/lib/nfl';
 import { PropQuestion } from '@/components/PropQuestion';
 import { PaymentPanel } from '@/components/PaymentPanel';
 import { InviteFriends } from '@/components/InviteFriends';
@@ -15,15 +15,18 @@ export default function Home() {
   const { data: propset, isLoading, refresh } = usePropset({ count: 5 });
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [submitting, setSubmitting] = useState(false);
-  const allAnswered = useMemo(() => propset?.questions?.every(q => typeof answers[q.id] === 'number'), [propset, answers]);
+  const allAnswered = useMemo(
+    () => propset?.questions?.every((q: PropQ) => typeof answers[q.id] === 'number'),
+    [propset, answers]
+  );
 
   useEffect(() => {
     if (propset?.questions) {
       const init: Record<string, number> = {};
-      propset.questions.forEach(q => init[q.id] = q.default ?? 0);
+      propset.questions.forEach((q: PropQ) => (init[q.id] = q.default ?? 0));
       setAnswers(init);
     }
-  }, [propset?.questions?.map(q=>q.id).join(',')]);
+  }, [propset?.questions]);
 
   return (
     <main className="max-w-3xl mx-auto p-6 space-y-6">
@@ -47,7 +50,7 @@ export default function Home() {
 
       <section className="card space-y-6">
         {isLoading && <p>Loading props…</p>}
-        {!isLoading && propset?.questions?.map(q => (
+        {!isLoading && propset?.questions?.map((q: PropQ) => (
           <PropQuestion
             key={q.id}
             q={q}
