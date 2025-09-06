@@ -1,0 +1,50 @@
+{
+  "name": "nfl-prop-miniapp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "deploy:contract": "hardhat run contracts/scripts/deploy.ts --network base"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "zod": "3.23.8",
+    "@tanstack/react-query": "5.51.23",
+    "swr": "2.2.5",
+    "viem": "2.21.30",
+    "wagmi": "2.12.18",
+    "@coinbase/onchainkit": "0.14.4",
+    "@neynar/nodejs-sdk": "2.0.0",
+    "@neynar/react": "0.0.7",
+    "isomorphic-dompurify": "2.16.0",
+    "clsx": "2.1.1",
+    "framer-motion": "11.3.29",
+    "lucide-react": "0.460.0",
+    "uuid": "9.0.1"
+  },
+  "devDependencies": {
+    "typescript": "5.6.2",
+    "@types/node": "20.14.13",
+    "@types/react": "18.3.5",
+    "@types/react-dom": "18.3.0",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.41",
+    "tailwindcss": "3.4.10",
+    "eslint": "9.9.0",
+    "eslint-config-next": "14.2.5",
+    "prettier": "3.3.3",
+    "hardhat": "2.22.12",
+    "@nomicfoundation/hardhat-viem": "2.0.4",
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "@openzeppelin/contracts": "5.0.2",
+    "ts-node": "10.9.2",
+    "dotenv": "16.4.5"
+  }
+}
