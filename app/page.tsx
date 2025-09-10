@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Coins, Share2, Users } from 'lucide-react';
 import { usePropset, type PropQ } from '@/lib/nfl';
 import { PropQuestion } from '@/components/PropQuestion';
@@ -9,15 +8,13 @@ import { PaymentPanel } from '@/components/PaymentPanel';
 import { InviteFriends } from '@/components/InviteFriends';
 import { submitEntry } from '@/lib/social';
 import { v4 as uuid } from 'uuid';
-import { useMiniApp } from '@neynar/react';
+import { sdk } from '@farcaster/miniapp-sdk';
 
 export default function Home() {
-  const { isSDKLoaded, actions } = useMiniApp();
   useEffect(() => {
-    if (isSDKLoaded) {
-      actions.ready?.();
-    }
-  }, [isSDKLoaded, actions]);
+    // Tell Farcaster clients our UI is ready to display
+    sdk.actions.ready().catch(() => {});
+  }, []);
 
   const [contestId] = useState(() => uuid());
   const { data: propset, isLoading, refresh } = usePropset({ count: 5 });
