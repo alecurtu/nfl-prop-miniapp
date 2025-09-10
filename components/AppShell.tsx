@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { BottomNav } from '@/components/BottomNav';
+import BottomNav from './BottomNav';
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
