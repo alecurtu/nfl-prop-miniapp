@@ -1,0 +1,9 @@
+
+
+/* Reserve space for bottom nav */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  body { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+}
+@supports not (padding-bottom: env(safe-area-inset-bottom)) {
+  body { padding-bottom: 64px; }
+}
