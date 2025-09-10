@@ -7,20 +7,24 @@ import type { LifecycleStatus } from '@coinbase/onchainkit/checkout';
 type Props = {
   contestId: string;
   disabled?: boolean;
-  onPaid: (txHash: string) => Promise<void>;
+  onPaid: (txOrChargeId: string) => Promise<void>;
 };
 
 export function PaymentPanel({ contestId, disabled, onPaid }: Props) {
   const [loading, setLoading] = useState(false);
-  const productId = process.env.NEXT_PUBLIC_COMMERCE_PRODUCT_ID; // optional
+  const productId = process.env.NEXT_PUBLIC_COMMERCE_PRODUCT_ID;
   const canCheckout = useMemo(() => Boolean(productId) && !disabled && !loading, [productId, disabled, loading]);
 
   const handleStatus = async (status: LifecycleStatus) => {
     const { statusName, statusData } = status;
     if (statusName === 'success') {
       const receipts = (statusData as any)?.transactionReceipts as Array<{ transactionHash?: string }> | undefined;
-      const txHash = receipts?.[0]?.transactionHash ?? `charge:${(statusData as any)?.chargeId ?? 'unknown'}`;
-      await onPaid(txHash);
+      const txHash = receipts?.[0]?.transactionHash;
+      const chargeId = (statusData as any)?.chargeId as string | undefined;
+      const token = txHash ?? (chargeId ? `charge:${chargeId}` : undefined);
+      if (token) {
+        await onPaid(token);
+      }
     }
   };
 
@@ -51,7 +55,7 @@ export function PaymentPanel({ contestId, disabled, onPaid }: Props) {
             <CheckoutStatus />
           </Checkout>
         ) : (
-          <span className="text-xs text-neutral-500">Set NEXT_PUBLIC_COMMERCE_PRODUCT_ID to enable Checkout.</span>
+          <span className="text-xs text-neutral-500">Set NEXT_PUBLIC_COMMERCE_PRODUCT_ID in your env to enable Checkout.</span>
         )}
       </div>
     </section>
