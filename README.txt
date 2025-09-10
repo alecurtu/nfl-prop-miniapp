@@ -1,0 +1,1 @@
+Add '@emotion/react' and '@emotion/styled' to package.json deps, then upload components/AppShell.tsx from this patch.
