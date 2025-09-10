@@ -9,8 +9,16 @@ import { PaymentPanel } from '@/components/PaymentPanel';
 import { InviteFriends } from '@/components/InviteFriends';
 import { submitEntry } from '@/lib/social';
 import { v4 as uuid } from 'uuid';
+import { useMiniApp } from '@neynar/react';
 
 export default function Home() {
+  const { isSDKLoaded, actions } = useMiniApp();
+  useEffect(() => {
+    if (isSDKLoaded) {
+      actions.ready?.();
+    }
+  }, [isSDKLoaded, actions]);
+
   const [contestId] = useState(() => uuid());
   const { data: propset, isLoading, refresh } = usePropset({ count: 5 });
   const [answers, setAnswers] = useState<Record<string, number>>({});
