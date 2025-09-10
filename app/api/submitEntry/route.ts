@@ -1,13 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-// In-memory mock stores (replace with DB in prod)
-const entries = new Map<string, any[]>();            // contestId -> entries
-const verifiedCharges = new Set<string>();           // chargeId strings
-
-// Allow webhook route to mark verified charges in-memory
-export function _markVerifiedCharge(chargeId: string) {
-  verifiedCharges.add(chargeId);
-}
+import { addEntry, listEntries } from '@/lib/server/store';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -24,15 +16,7 @@ export async function POST(req: NextRequest) {
     chargeId = chargeId.split(':')[1];
   }
 
-  const arr = entries.get(contestId) || [];
-  arr.push({
-    at: Date.now(),
-    txHash: txHash || null,
-    chargeId: chargeId || null,
-    verified: chargeId ? verifiedCharges.has(chargeId) : Boolean(txHash),
-    answers
-  });
-  entries.set(contestId, arr);
-
-  return NextResponse.json({ ok: true, count: arr.length, verified: arr[arr.length - 1].verified });
+  const entry = addEntry(contestId, { txHash: txHash || null, chargeId: chargeId || null, answers });
+  const count = listEntries(contestId).length;
+  return NextResponse.json({ ok: true, count, verified: entry.verified });
 }

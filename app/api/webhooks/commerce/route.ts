@@ -1,9 +1,7 @@
 // Coinbase Commerce webhook validator
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-
-// Re-import local store marker from submitEntry route
-import { _markVerifiedCharge } from '../../submitEntry/route';
+import { markVerifiedCharge } from '@/lib/server/store';
 
 export const runtime = 'nodejs'; // use Node crypto
 
@@ -36,11 +34,10 @@ export async function POST(req: NextRequest) {
   }
 
   const event = JSON.parse(rawBody);
-  // Expect charge:confirmed/completed to mark as verified
-  const type = event?.type;
+  const type = event?.type as string | undefined;
   const chargeId = event?.data?.id as string | undefined;
   if (chargeId && (type?.includes('charge:confirmed') || type?.includes('charge:resolved') || type?.includes('charge:pending'))) {
-    _markVerifiedCharge(chargeId);
+    markVerifiedCharge(chargeId);
   }
 
   return NextResponse.json({ ok: true });
